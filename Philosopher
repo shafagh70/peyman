@@ -1,0 +1,37 @@
+import threading
+
+class (threading.Thread):
+    def __init__(self, name, left_fork, right_fork):
+        threading.Thread.__init__(self)
+        self.name = name
+        self.left_fork = left_fork
+        self.right_fork = right_fork
+
+    def run(self):
+        while True:
+            # فکر کردن
+            print(f"{self.name} در حال فکر کردن است")
+            
+            # تلاش برای گرفتن چنگال‌ها
+            self.left_fork.acquire()
+            self.right_fork.acquire()
+            
+            # غذا خوردن
+            print(f"{self.name} در حال غذا خوردن است")
+            
+            # گذاشتن چنگال‌ها
+            self.right_fork.release()
+            self.left_fork.release()
+
+# تنظیم چنگال‌ها
+forks = [threading.Lock() for n in range(5)]
+
+# ایجاد فیلسوفان
+philosophers = [
+    Philosopher(f"فیلسوف {i}", forks[i], forks[(i+1)%5]) 
+    for i in range(5)
+]
+
+# شروع به کار
+for p in philosophers:
+    p.start()
